@@ -1,19 +1,8 @@
 <template>
-<li :class="class_li">
+<li :class="class_li" @click="open_modal" class="pointer">
     {{ pokemon.name | capitalize }}
 
-    <v-btn
-        class="mx-2"
-        fab
-        small
-        color="F5F5F5"
-        elevation="0"
-        @click="set_favorite"
-    >
-        <v-icon :color="favorite ? '#ECA539' : '#BFBFBF'">
-            mdi-star
-        </v-icon>
-    </v-btn>
+    <btn-fav @set_favorite="set_favorite" :favorite="favorite" />
 </li>
 </template>
 
@@ -35,7 +24,11 @@ export default {
     watch: {
         pokemon() {
             this.favorite = this.data_favs[this.pokemon.name];
-        }
+        },
+        
+        data_favs() {
+            this.favorite = this.data_favs[this.pokemon.name];
+        },
     },
 
     created() {
@@ -56,6 +49,10 @@ export default {
             this.favorite = !this.favorite;
             this.$emit('get_favs');
         },
+
+        open_modal() {
+            this.$emit('open_modal');
+        }
     },
     
     computed: {

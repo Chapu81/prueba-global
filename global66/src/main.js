@@ -11,6 +11,9 @@ Vue.filter('capitalize', function (value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
 })
 
+Vue.component('btn-fav', () => import('./components/Btn_fav'));
+Vue.component('loader-c', () => import('./components/Loader'));
+
 Vue.config.productionTip = false
 
 new Vue({

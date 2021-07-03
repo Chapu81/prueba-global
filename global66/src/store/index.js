@@ -9,7 +9,8 @@ export default new Vuex.Store({
   state: {
     pokemons: [],
     favorites: {},
-    pages: {}
+    pages: {},
+    data_modal: {}
   },
   mutations: {
     upd_data_pokemons(state, arr) {
@@ -18,6 +19,10 @@ export default new Vuex.Store({
       
         state.pages.next = arr.next;
         state.pages.previous = arr.previous;
+    },
+    
+    upd_data_modal(state, data) {
+        state.data_modal = { ...data };
     },
     
     push_favorites(state, pokemon) {
@@ -30,12 +35,13 @@ export default new Vuex.Store({
   },
   actions: {
     get_pokemons({ commit }, url) {
-      commit('upd_data_pokemons', []);
-      let url_api = url ? url : _API_;
-      fetch(url_api)
+      fetch(`${_API_}${url}`)
         .then(response => response.json())
-        .then(data => {
-          commit('upd_data_pokemons', data);
+        .then((data) => {
+          let commit_function = data.sprites ? 'upd_data_modal' : 'upd_data_pokemons';
+          // commit('upd_data_modal', data);
+          // commit('upd_data_pokemons', data);
+          commit(commit_function, data);
         })
         .catch(err => console.log(err));
     },
@@ -58,6 +64,14 @@ export default new Vuex.Store({
     
     favorites: (state) => {
       return state.favorites;
+    },
+    
+    data_modal: (state) => {
+      return state.data_modal;
+    },
+    
+    url_api: () => {
+      return _API_;
     },
   }
 })

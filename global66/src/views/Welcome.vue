@@ -37,12 +37,8 @@
 </template>
 
 <script>
-import Loader from '../components/Loader.vue'
 export default {
     name: 'welcome',
-    components:{
-        'loader-c': Loader,
-    },
 
     data: () => ({
         loading: false,

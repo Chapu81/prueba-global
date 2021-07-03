@@ -24,3 +24,15 @@
     text-transform: none!important;
     font-size: 18px!important;
 }
+
+.bolder {
+    font-weight: bold;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.v-application ul, .v-application ol {
+    padding-left: 0px;
+}

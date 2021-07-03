@@ -10,6 +10,7 @@
                 color="none"
                 prepend-inner-icon="mdi-magnify"
                 v-model="search"
+                @keypress.enter="search_api"
             ></v-text-field>
         </div>
 
@@ -19,7 +20,8 @@
                     <list-c :key="key" 
                         :pokemon="pokemon"
                         :data_favs="data_favs"
-                        @get_favs="get_favs" />
+                        @get_favs="get_favs"
+                        @open_modal="get_data(pokemon.url, true)" />
                 </template>
             </ul>
 
@@ -77,17 +79,19 @@
             </div>
         </div>
     </section>
+
+    <modal-c :open_modal="open_modal" :data_favs="data_favs" :pokemon="data_modal" @get_favs="get_favs" />
 </div>
 </template>
 
 <script>
-import Loader from '../components/Loader.vue'
 import List from '../components/List.vue'
+import Modal from '../components/Modal.vue'
 export default {
     name: 'pokemons',
     components:{
-        'loader-c': Loader,
         'list-c': List,
+        'modal-c': Modal,
     },
 
     watch: {
@@ -95,6 +99,10 @@ export default {
             if(this.pokemons.length) {
                 this.loading = false;
             }
+        },
+
+        data_modal() {
+            this.open_modal = !this.open_modal;
         }
     },
 
@@ -108,16 +116,24 @@ export default {
         data_favs: {},
         array_favorites: [],
         search: '',
+
+        open_modal: false,
+        // data_modal: {}
     }),
 
     methods: {
-        async get_data(url) {
+        async get_data(url, modal) {
             this.loading = true;
-            let url_api = url ? url : '';
-            await this.$store.dispatch('get_pokemons', url_api);
+            let url_api = '';
+            if(url) {
+                let param_url = url.split('https://pokeapi.co/api/v2/pokemon/');
+                url_api = param_url[param_url.length - 1];
+            }
+            await this.$store.dispatch('get_pokemons', url_api, modal);
             this.loading = false;
 
-            this.scroll_top_list();
+            if(!modal)
+                this.scroll_top_list();
         },
 
         scroll_top_list() {
@@ -129,18 +145,22 @@ export default {
             this.view_all = state;
         },
         
-        /* array_favorites() {
-            return Object.values(this.data_favs);
-        }, */
+        search_api(){
+            console.log(this.search);
+        },
 
         get_favs() {
-            this.data_favs = this.$store.getters.favorites;
+            this.data_favs = {...this.$store.getters.favorites};
             this.array_favorites = Object.values(this.data_favs);
             console.log('get_favs');
         },
     },
 
     computed: {
+        data_modal() {
+            return this.$store.getters.data_modal;
+        }, 
+
         pokemons() {
             return this.$store.getters.pokemons;
         },
@@ -212,7 +232,5 @@ export default {
     margin-bottom: 15px;
 }
 
-.v-application ul, .v-application ol {
-    padding-left: 0px;
-}
+
 </style>
