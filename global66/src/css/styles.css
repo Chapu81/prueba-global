@@ -1,7 +1,26 @@
 * {
     font-family: 'Lato', sans-serif;
+    list-style-type: none;
+    scrollbar-width: thin;
+    scrollbar-color: #aaa transparent;
 }
 
-.bg-red {
-    background: #F22539;
+*::-webkit-scrollbar {
+    width: 4px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border-radius: 4px;
+    position: absolute;
+}
+
+.v-btn {
+    letter-spacing: 0px!important;
+    text-transform: none!important;
+    font-size: 18px!important;
 }

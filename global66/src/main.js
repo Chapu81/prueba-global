@@ -5,6 +5,12 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import './css/styles.css';
 
+Vue.filter('capitalize', function (value) {
+  if (!value) return ''
+  value = value.toString()
+  return value.charAt(0).toUpperCase() + value.slice(1)
+})
+
 Vue.config.productionTip = false
 
 new Vue({

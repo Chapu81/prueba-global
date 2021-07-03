@@ -88,10 +88,4 @@ p {
     color: #5E5E5E;
     font-size: 18px;
 }
-
-.btn {
-    letter-spacing: 0;
-    text-transform: none;
-    font-size: 18px!important;
-}
 </style>
