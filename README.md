@@ -1,2 +1,1 @@
-"# prueba-global" 
-"# prueba-global" 
+Proyecto creado sobre Vue, utilizando Vue router para las rutas, Vuex para el manejo del store y vuetify como framework de css. Aprovechando los componentes que ofrece vuetify logré que la mayoria del codigo sea iterable y reutilizable, ya que toda la información que manejaba cada objeto esta siempre la misma.
