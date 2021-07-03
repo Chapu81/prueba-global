@@ -5,6 +5,7 @@
     small
     color="F5F5F5"
     elevation="0"
+    depressed
     @click.stop="set_favorite"
 >
     <v-icon :color="favorite ? '#ECA539' : '#BFBFBF'">
@@ -28,4 +29,7 @@ export default {
 
 <style scoped>
 
+.theme--light.v-btn:focus::before {
+    opacity: 0;
+}
 </style>

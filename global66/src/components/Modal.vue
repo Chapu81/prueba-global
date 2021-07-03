@@ -10,6 +10,15 @@
                 max-width="180"
                 :src="img_pokemon"
             ></v-img>
+
+            <v-btn
+                icon
+                color="white"
+                class="icon-close"
+                @click="set_dialog(false)"
+            >
+                <v-icon>mdi-close-circle</v-icon>
+            </v-btn>
         </div>
 
         <div class="data">
@@ -31,11 +40,13 @@
                     dark
                     color="#F22539"
                     large
+                    @click="copy"
                 >
                     Share to my friends
                 </v-btn>
                 <btn-fav @set_favorite="set_favorite" :favorite="favorite" />
             </div>
+            <span id="text-copy">{{text_copy}}</span>
         </div>
     </v-card>
 </v-dialog>
@@ -90,6 +101,22 @@ export default {
             this.favorite = !this.favorite;
             this.$emit('get_favs');
         },
+
+        copy() {
+            let span = document.getElementById('text-copy');
+            let selection = document.createRange();
+            selection.selectNodeContents(span);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(selection);
+            document.execCommand('copy');
+            window.getSelection().removeRange(selection);
+        },
+
+        capitalize(value) {
+            if (!value) return ''
+            value = value.toString()
+            return value.charAt(0).toUpperCase() + value.slice(1)
+        },
     },
 
     computed: {
@@ -107,6 +134,20 @@ export default {
                 height: this.pokemon.height,
                 types: this.types,
             }
+        },
+
+        text_copy() {
+            let keys = Object.keys(this.data_pokemon);
+            let values = Object.values(this.data_pokemon);
+            let res = '';
+            values.forEach((data, key) => {
+                res += `${this.capitalize(keys[key])}: ${this.capitalize(data)}`; 
+                if(key < values.length - 1)
+                    res += ', ';
+            });
+
+            return res;
+
         },
 
         types() {
@@ -132,6 +173,13 @@ export default {
 <style scoped>
 .bg-img {
     background: url('../assets/bg-pokemon.png');
+    position: relative;
+}
+
+.icon-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
 .data {
@@ -142,5 +190,12 @@ ul li {
     color: #5E5E5E;
     font-size: 18px;
     border-bottom: 1px solid #E8E8E8;
+}
+
+#text-copy {
+    font-size: 0;
+    position: absolute;
+    top: -1000px;
+    left: -1000px;
 }
 </style>

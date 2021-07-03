@@ -14,7 +14,7 @@
             ></v-text-field>
         </div>
 
-        <div class="max-width list py-0">
+        <div class="max-width list py-0" v-if="!no_data">
             <ul>
                 <template v-for="(pokemon, key) in pokemon_list">
                     <list-c :key="key" 
@@ -56,7 +56,7 @@
             </div>
         </div>
         
-        <div class="btns">
+        <div class="btns" v-if="!no_data">
             <div class="max-width d-flex justify-space-between align-center">
                 <template v-for="(btn, key) in btn_view">
                     <v-btn
@@ -78,6 +78,19 @@
                 </template>
             </div>
         </div>
+
+        <div class="no-data text-center" v-if="no_data">
+            <p class="bolder mb-0">Uh-oh!</p>
+            <p>You look lost on your journey!</p>
+            <v-btn
+                rounded
+                dark
+                :color="color_red"
+                @click="back_home"
+            >
+                Go back home
+            </v-btn>
+        </div>
     </section>
 
     <modal-c :open_modal="open_modal" :data_favs="data_favs" :pokemon="data_modal" @get_favs="get_favs" />
@@ -96,9 +109,10 @@ export default {
 
     watch: {
         pokemons() {
-            if(this.pokemons.length) {
-                this.loading = false;
+            if(!this.pokemons.length) {
+                this.no_data = true;
             }
+                this.loading = false;
         },
 
         data_modal() {
@@ -107,7 +121,7 @@ export default {
     },
 
     created() {
-        this.get_data();
+        this.get_data(false);
     },
 
     data: () => ({
@@ -118,7 +132,9 @@ export default {
         search: '',
 
         open_modal: false,
-        // data_modal: {}
+        color_red: '#F22539',
+        color_gray: '#BFBFBF',
+        no_data: false,
     }),
 
     methods: {
@@ -126,11 +142,15 @@ export default {
             this.loading = true;
             let url_api = '';
             if(url) {
+                console.log(url);
                 let param_url = url.split('https://pokeapi.co/api/v2/pokemon/');
                 url_api = param_url[param_url.length - 1];
             }
-            await this.$store.dispatch('get_pokemons', url_api, modal);
+            let res = await this.$store.dispatch('get_pokemons', url_api, modal);
             this.loading = false;
+            if(!res) {
+                this.no_data = true;
+            }
 
             if(!modal)
                 this.scroll_top_list();
@@ -138,7 +158,8 @@ export default {
 
         scroll_top_list() {
             var elmnt = document.querySelector('.list');
-            elmnt.scrollTop = 0;
+            if(elmnt)
+                elmnt.scrollTop = 0;
         },
 
         set_view_all(state) {
@@ -146,14 +167,18 @@ export default {
         },
         
         search_api(){
-            console.log(this.search);
+            this.get_data(this.search, false)
         },
 
         get_favs() {
             this.data_favs = {...this.$store.getters.favorites};
             this.array_favorites = Object.values(this.data_favs);
-            console.log('get_favs');
         },
+
+        back_home() {
+            this.get_data(false);
+            this.no_data = false;
+        }
     },
 
     computed: {
@@ -178,13 +203,13 @@ export default {
                 {
                     icon: 'mdi-format-list-bulleted-square',
                     text: 'All',
-                    color: this.view_all ? '#F22539' : '#BFBFBF',
+                    color: this.view_all ? this.color_red : this.color_gray,
                     view_all: true,
                 },
                 {
                     icon: 'mdi-star',
                     text: 'Favorites',
-                    color: !this.view_all ? '#F22539' : '#BFBFBF',
+                    color: !this.view_all ? this.color_red : this.color_gray,
                     view_all: false
                 },
             ]
@@ -230,6 +255,15 @@ export default {
     height: calc(100vh - 160px);
     overflow-y: scroll;
     margin-bottom: 15px;
+}
+
+.no-data p:first-of-type {
+    font-size: 36px;
+}
+
+.no-data p:last-of-type {
+    font-size: 20px;
+    margin-bottom: 25px;
 }
 
 

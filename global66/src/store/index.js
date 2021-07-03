@@ -35,15 +35,17 @@ export default new Vuex.Store({
   },
   actions: {
     get_pokemons({ commit }, url) {
-      fetch(`${_API_}${url}`)
+      return fetch(`${_API_}${url}`)
         .then(response => response.json())
         .then((data) => {
           let commit_function = data.sprites ? 'upd_data_modal' : 'upd_data_pokemons';
-          // commit('upd_data_modal', data);
-          // commit('upd_data_pokemons', data);
           commit(commit_function, data);
+          return true;
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          console.log(err);
+          return false;
+        });
     },
     
     upd_favorites({ commit, state }, {action, pokemon}) {
