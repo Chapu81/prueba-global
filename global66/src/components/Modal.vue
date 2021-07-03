@@ -48,6 +48,23 @@
             </div>
             <span id="text-copy">{{text_copy}}</span>
         </div>
+
+        <v-snackbar
+            v-model="snackbar"
+            :timeout="1500"
+        >
+            Copied text
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    color="pink"
+                    text
+                    v-bind="attrs"
+                    @click="snackbar = false"
+                >
+                    Close
+                </v-btn>
+            </template>
+        </v-snackbar>
     </v-card>
 </v-dialog>
 </template>
@@ -82,6 +99,7 @@ export default {
     data: () => ({
         dialog: false,
         favorite: false,
+        snackbar: false,
     }),
 
     methods: {
@@ -110,6 +128,7 @@ export default {
             window.getSelection().addRange(selection);
             document.execCommand('copy');
             window.getSelection().removeRange(selection);
+            this.snackbar = true;
         },
 
         capitalize(value) {

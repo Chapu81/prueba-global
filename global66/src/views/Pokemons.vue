@@ -6,6 +6,7 @@
             <v-text-field
                 solo
                 dense
+                clearable
                 label="Search"
                 color="none"
                 prepend-inner-icon="mdi-magnify"
@@ -142,7 +143,6 @@ export default {
             this.loading = true;
             let url_api = '';
             if(url) {
-                console.log(url);
                 let param_url = url.split('https://pokeapi.co/api/v2/pokemon/');
                 url_api = param_url[param_url.length - 1];
             }
