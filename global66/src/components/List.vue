@@ -38,6 +38,10 @@ export default {
         }
     },
 
+    created() {
+        this.favorite = this.data_favs[this.pokemon.name];
+    },
+
     data: () => ({
         favorite: false,
     }),

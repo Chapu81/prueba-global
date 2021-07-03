@@ -25,7 +25,7 @@ export default new Vuex.Store({
     },
     
     delete_favorites(state, pokemon) {
-        state.favorites[pokemon.name] = null;
+        delete state.favorites[pokemon.name];
     },
   },
   actions: {

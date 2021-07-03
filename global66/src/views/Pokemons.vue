@@ -9,13 +9,21 @@
                 label="Search"
                 color="none"
                 prepend-inner-icon="mdi-magnify"
+                v-model="search"
             ></v-text-field>
         </div>
 
         <div class="max-width list py-0">
-            <pokemon-list :pokemons="pokemons" />
+            <ul>
+                <template v-for="(pokemon, key) in pokemon_list">
+                    <list-c :key="key" 
+                        :pokemon="pokemon"
+                        :data_favs="data_favs"
+                        @get_favs="get_favs" />
+                </template>
+            </ul>
 
-            <div class="max-width d-flex justify-space-between align-center pa-0 pb-2">
+            <div class="max-width d-flex justify-space-between align-center pa-0 pb-2" v-if="view_all">
                 <template v-for="(btn, key) in btn_pages">
                     <v-btn
                         rounded
@@ -74,12 +82,12 @@
 
 <script>
 import Loader from '../components/Loader.vue'
-import Pokemon_list from '../components/Pokemon_list.vue'
+import List from '../components/List.vue'
 export default {
     name: 'pokemons',
     components:{
         'loader-c': Loader,
-        'pokemon-list': Pokemon_list,
+        'list-c': List,
     },
 
     watch: {
@@ -97,6 +105,9 @@ export default {
     data: () => ({
         loading: true,
         view_all: true,
+        data_favs: {},
+        array_favorites: [],
+        search: '',
     }),
 
     methods: {
@@ -117,11 +128,25 @@ export default {
         set_view_all(state) {
             this.view_all = state;
         },
+        
+        /* array_favorites() {
+            return Object.values(this.data_favs);
+        }, */
+
+        get_favs() {
+            this.data_favs = this.$store.getters.favorites;
+            this.array_favorites = Object.values(this.data_favs);
+            console.log('get_favs');
+        },
     },
 
     computed: {
         pokemons() {
             return this.$store.getters.pokemons;
+        },
+
+        pokemon_list() {
+            return this.view_all ? this.pokemons : this.array_favorites;
         },
         
         pages() {
@@ -185,5 +210,9 @@ export default {
     height: calc(100vh - 160px);
     overflow-y: scroll;
     margin-bottom: 15px;
+}
+
+.v-application ul, .v-application ol {
+    padding-left: 0px;
 }
 </style>
